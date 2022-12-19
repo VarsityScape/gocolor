@@ -22,7 +22,7 @@ var (
 	port   = flag.String("port", "8080", "port to listen on")
 	noHTML = flag.Bool("no-html", false, "disable html output")
 	dCount = flag.Int("count", 10, "number of shades and tints to generate")
-	dColor = flag.String("color", "#fff", "color to display")
+	dColor = flag.String("color", "fff", "color to display (without #)")
 )
 
 func init() {
