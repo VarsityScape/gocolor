@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Color Shades and Tint tool</title>
+    </head>
+
+    <body>
+    <script src="/static/js/copy.js"></script>
+    <h2>Original Color: {{ .Color.Hex -}}</h2>
+    <h3>Showing {{.Count}} color strides </h3>
+    <h3>Shades</h3>
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
+        {{ range $index, $val := .Color.Shades .Count }}
+        <div style="display: flex; flex-direction: column">
+            <p style="text-align: center;">{{ percent $index $.Count -}}%</p>
+
+            <div style="background-color: {{ .Hex }}; width: 70px; height: 70px; margin: 10px; border: 1px solid black;"
+                 onclick="copy('{{- .Hex -}}')">
+                <p style="text-align: center;">{{ .Hex }}</p>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+    <h3>Tints</h3>
+    <div style="display: flex; flex-direction: row; flex-wrap: wrap;">
+        {{ range $index, $val := .Color.Tints .Count }}
+            <div>
+                <div style="alignment: center">
+                    <p style="text-align: center;">{{ percent $index $.Count -}}%</p>
+                </div>
+                <div style="background-color: {{ .Hex }}; width: 70px; height: 70px; margin: 10px; border: 1px solid black;"
+                     onclick="copy('{{- .Hex -}}')">
+                    <p style="text-align: center;">{{ .Hex }}</p>
+                </div>
+            </div>
+        {{ end }}
+    </div>
+    </body>
+</html>

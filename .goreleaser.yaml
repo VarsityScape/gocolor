@@ -1,0 +1,34 @@
+builds:
+  - env:
+      - CGO_ENABLED=0
+    binary: gocolor
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+checksum:
+  name_template: 'checksums.txt'
+
+release:
+  prerelease: auto
+
+universal_binaries:
+  - replace: true
+
+brews:
+  - name: gocolor
+    tap:
+      owner: varsityscape
+      name: homebrew-vs
+    commit_author:
+      name: Evans Owamoyo
+      email: evans.dev99@gmail.com
+    homepage: https://github.com/varsityscape/gocolor
+    description: A simple CLI tool that shows tints and shades of a given color
+    license: "MIT"
+    caveats: |
+      Thanks for installing gocolor!
+      Please consider starring the project at https://github.com/varsityscape/gocolor
