@@ -36,12 +36,12 @@ func init() {
 }
 
 type handler struct {
-	DColor string
-	DCount int
+	dcolor string
+	dcount int
 }
 
-func New(defaultColor string, defaultCount int) *handler {
-	return &handler{DColor: defaultColor, DCount: defaultCount}
+func NewHandler(defaultColor string, defaultCount int) *handler {
+	return &handler{dcolor: defaultColor, dcount: defaultCount}
 }
 
 type Data struct {
@@ -51,13 +51,13 @@ type Data struct {
 
 func (h *handler) HTMLColor(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	colorStr := orDefault(vars["color"], h.DColor)
+	colorStr := orDefault(vars["color"], h.dcolor)
 	clr, err := gocolor.Hex(colorStr)
 	if err != nil {
 		http.Error(w, "Invalid color", http.StatusBadRequest)
 		return
 	}
-	count := h.DCount
+	count := h.dcount
 	qc := r.URL.Query().Get("count")
 	if qc != "" {
 		c, err := strconv.Atoi(qc)

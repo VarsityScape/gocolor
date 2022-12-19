@@ -100,18 +100,21 @@ func TestRGBAhex(t *testing.T) {
 }
 func TestColorHex(t *testing.T) {
 	testCases := []struct {
-		name string
-		c    Color
-		want string
+		name    string
+		c       Color
+		noAlpha []bool
+		want    string
 	}{
-		{"white", RGB(255, 255, 255), "#ffffff"},
-		{"black", RGB(0, 0, 0), "#000000"},
-		{"red", Color{R: 255, G: 0, B: 0, A: 255}, "#ff0000"},
-		{"with alpha", Color{R: 255, G: 255, B: 255, A: 128}, "#ffffff80"},
+		{name: "white", c: RGB(255, 255, 255), want: "#ffffff"},
+		{name: "black", c: RGB(0, 0, 0), want: "#000000"},
+		{name: "red", c: Color{R: 255, G: 0, B: 0, A: 255}, want: "#ff0000"},
+		{name: "with alpha", c: Color{R: 255, G: 255, B: 255, A: 128}, want: "#ffffff80"},
+		{name: "with alpha 2", c: RGBA(255, 255, 255, 128), want: "#ffffff80", noAlpha: []bool{false}},
+		{name: "don't want alpha", c: Color{R: 255, G: 255, B: 255, A: 128}, want: "#ffffff", noAlpha: []bool{true}},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.want, tc.c.Hex())
+			assert.Equal(t, tc.want, tc.c.Hex(tc.noAlpha...))
 		})
 	}
 }
@@ -126,6 +129,8 @@ func TestColorSubtract(t *testing.T) {
 	}{
 		{"white minus white", RGB(255, 255, 255), RGB(255, 255, 255), Color{}, false},
 		{"red minus blue", RGB(255, 0, 0), RGB(0, 0, 255), Color{}, true},
+		{"invalid color src", Color{R: 300}, RGB(0, 0, 255), Color{}, true},
+		{"invalid color param", White, Color{R: 300}, Color{}, true},
 	}
 	for _, tc := range tcs {
 		t.Run(tc.name, func(t *testing.T) {
@@ -141,17 +146,51 @@ func TestColorSubtract(t *testing.T) {
 }
 
 func TestColorTint(t *testing.T) {
-	color := RGB(255, 0, 0)
-	nc, err := color.Tint(1)
-	assert.NoError(t, err)
-	assert.Equal(t, White, nc)
+	tcs := []struct {
+		name    string
+		color   Color
+		percent float64
+		exp     Color
+		err     bool
+	}{
+		{"invalid percent", White, 1.1, Color{}, true},
+		{"invalid color", Color{R: 300}, 0.5, Color{}, true},
+		{"white", White, 1, RGB(255, 255, 255), false},
+		{"red", RGB(255, 0, 0), 0.5, RGB(255, 128, 128), false},
+	}
+	for _, tc := range tcs {
+		nc, err := tc.color.Tint(tc.percent)
+		if err != nil {
+			assert.True(t, tc.err)
+		} else {
+			assert.False(t, tc.err)
+			assert.Equal(t, tc.exp, nc)
+		}
+	}
 }
 func TestColorShade(t *testing.T) {
-	color := RGB(255, 0, 0)
-	nc, err := color.Shade(1)
-	assert.NoError(t, err)
-	assert.Equal(t, Black, nc)
-	assert.NotEqual(t, color, nc)
+	tcs := []struct {
+		name    string
+		color   Color
+		percent float64
+		exp     Color
+		err     bool
+	}{
+		{"invalid percent", White, 1.1, Color{}, true},
+		{"invalid color", Color{R: 300}, 0.5, Color{}, true},
+		{"white", White, 1, Black, false},
+		{"red", RGB(255, 0, 0), 0.5, RGB(127, 0, 0), false},
+		{"hexa color", Color{R: 255, G: 0, B: 0, A: 128}, 0.5, Color{R: 127, G: 0, B: 0, A: 128}, false},
+	}
+	for _, tc := range tcs {
+		nc, err := tc.color.Shade(tc.percent)
+		if err != nil {
+			assert.True(t, tc.err)
+		} else {
+			assert.False(t, tc.err)
+			assert.Equal(t, tc.exp, nc)
+		}
+	}
 }
 
 func TestNorm(t *testing.T) {
@@ -172,4 +211,27 @@ func TestNorm(t *testing.T) {
 		})
 	}
 
+}
+
+func TestColor_ShadesTintsErr(t *testing.T) {
+	tcs := []struct {
+		name      string
+		c         Color
+		count     int
+		shouldErr bool
+	}{
+		{"invalid color", Color{R: 300}, 5, true},
+	}
+
+	for _, tt := range tcs {
+		t.Run(tt.name, func(t *testing.T) {
+			if _, err := tt.c.Shades(tt.count); (err != nil && !tt.shouldErr) || (err == nil && tt.shouldErr) {
+				t.Errorf("Color.Shades() error = %v, shouldErr %v", err, tt.shouldErr)
+			}
+			if _, err := tt.c.Tints(tt.count); (err != nil && !tt.shouldErr) || (err == nil && tt.shouldErr) {
+				t.Errorf("Color.Tints() error = %v, shouldErr %v", err, tt.shouldErr)
+			}
+
+		})
+	}
 }

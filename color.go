@@ -58,8 +58,10 @@ func (c Color) RGBA() (r, g, b, a uint32) {
 
 // Hex returns the hex representation of the color
 // Note that it always begins with a hash
-func (c Color) Hex() string {
-	if c.A != 255 {
+// Hex does not return the alpha channel if Color.A != 255
+// unless the first value of noAlpha is true
+func (c Color) Hex(noAlpha ...bool) string {
+	if c.A != 255 && (len(noAlpha) == 0 || !noAlpha[0]) {
 		return c.HexA()
 	}
 	return fmt.Sprintf(ptn3, c.R, c.G, c.B)
