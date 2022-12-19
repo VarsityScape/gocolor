@@ -2,6 +2,7 @@ builds:
   - env:
       - CGO_ENABLED=0
     binary: gocolor
+    main: ./cmd/
     goos:
       - linux
       - windows
