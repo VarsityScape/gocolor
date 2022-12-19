@@ -23,7 +23,7 @@ brews:
   - name: gocolor
     tap:
       owner: varsityscape
-      name: homebrew-vs
+      name: homebrew-varsityscape
     commit_author:
       name: Evans Owamoyo
       email: evans.dev99@gmail.com
