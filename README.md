@@ -43,15 +43,19 @@ To use the CLI, a typical command would look like this:
 ```bash
 gocolor -color "#FF0000" -no-html
 ```
+![CMD Example Image](./assets/cmd_img.png)
+
 
 #### Web Server
 To use the web server, a typical command would look like this:
 ```bash
 gocolor -port 8080 -color FF0000 -count 10
 ```
-Then, you can visit `http://localhost:8080/FF0000?count=10` to see the web interface.
+Then, you can visit `http://localhost:8080/FF0000?count=10` to see the web interface.  
 
-Note that editing the URL address bar will change the color and count.
+![Server Example Image](./assets/server_img.png)
+
+> **NOTE** that editing the URL address bar will change the color and count.
 
 ### Summary
 | Flag       | Description                                                                                                                       | Default |
