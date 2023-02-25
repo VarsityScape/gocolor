@@ -153,7 +153,7 @@ func (c Color) IsValid() bool {
 
 // norm normalizes a 3/4 digit hex color to a 6/8 digit hex color
 func norm(s string) (result string) {
-	s, didrm := rmh(s)
+	s, didrm := Rmh(s)
 	defer func() {
 		if didrm {
 			result = addh(result)
@@ -171,9 +171,9 @@ func norm(s string) (result string) {
 	}
 }
 
-// rmh removes the hash from a hex color
+// Rmh removes the hash from a hex color
 // it returns the string and a bool indicating if there was a hash
-func rmh(s string) (string, bool) {
+func Rmh(s string) (string, bool) {
 	if len(s) > 0 && s[0] == '#' {
 		return s[1:], true
 	}

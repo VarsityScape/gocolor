@@ -7,12 +7,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/gookit/color"
-	"github.com/pkg/errors"
-	"github.com/varsityscape/gocolor"
 	"log"
 	"math"
 	"net/http"
+
+	"github.com/gookit/color"
+	"github.com/pkg/errors"
+	"github.com/varsityscape/gocolor"
 
 	"github.com/gorilla/mux"
 	"github.com/varsityscape/gocolor/web"
@@ -44,7 +45,8 @@ func main() {
 	r.PathPrefix("/static/").HandlerFunc(handler.FS)
 
 	log.Println("Listening on port", *port)
-	log.Printf("Open http://localhost:%s/%s?count=%d to view shades and tints.\n", *port, *dColor, *dCount)
+	clr, _ := gocolor.Rmh(*dColor)
+	log.Printf("Open http://localhost:%s/%s?count=%d to view shades and tints.\n", *port, clr, *dCount)
 
 	http.ListenAndServe(":"+*port, r)
 }
